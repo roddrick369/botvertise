@@ -1,0 +1,4 @@
+aiogram==3.18
+fastapi
+uvicorn
+replit
