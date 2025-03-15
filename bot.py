@@ -35,7 +35,7 @@ async def encurtar_link(message: types.Message):
 
     # Constrói o link encurtado que aponta para o MiniApp
     # Em Replit, geralmente a URL é no formato: https://<REPL_SLUG>.<REPL_OWNER>.repl.co
-    replit_url = f"https://{os.environ.get('REPL_SLUG')}.{os.environ.get('REPL_OWNER')}.repl.co"
+    replit_url = https://botvertise.onrender.com
     link_encurtado = f"{replit_url}/webapp?l={link_id}"
 
     await message.answer(f"✅ Seu link encurtado: {link_encurtado}")
