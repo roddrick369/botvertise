@@ -93,10 +93,12 @@ async def start_webapp():
 async def main():
     await bot.delete_webhook()
     print("🔄 Iniciando o bot do Telegram...")  # Debug
-    task_bot = asyncio.create_task(dp.start_polling(bot))
-    print("✅ Bot está rodando!")  # Isso nunca deve ser executado se o polling estiver funcionando
+
+    # Criando tarefas para rodar o bot e o FastAPI ao mesmo tempo
     task_webapp = asyncio.create_task(start_webapp())
-    await asyncio.gather(task_bot, task_webapp)
+    await dp.start_polling(bot)  # Isso mantém o bot rodando indefinidamente
+
+    await task_webapp  # Apenas para garantir que o FastAPI não finalize antes da hora
 
 if __name__ == "__main__":
     asyncio.run(main())
