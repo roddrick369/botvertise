@@ -92,7 +92,9 @@ async def start_webapp():
 
 async def main():
     await bot.delete_webhook()
+    print("🔄 Iniciando o bot do Telegram...")  # Debug
     task_bot = asyncio.create_task(dp.start_polling(bot))
+    print("✅ Bot está rodando!")  # Isso nunca deve ser executado se o polling estiver funcionando
     task_webapp = asyncio.create_task(start_webapp())
     await asyncio.gather(task_bot, task_webapp)
 
