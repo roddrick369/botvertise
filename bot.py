@@ -1,9 +1,9 @@
 import asyncio
+import uvicorn
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters import Command
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-import uvicorn
 import json
 import os
 
@@ -29,7 +29,7 @@ def salvar_links(db):
 
 db = carregar_links()
 
-# Rota para verificar se o WebApp está online
+# Rota para testar se o servidor está online
 @app.get("/", response_class=HTMLResponse)
 async def root():
     return "<h1>Bot e WebApp rodando!</h1>"
@@ -85,20 +85,20 @@ async def encurtar_link(message: types.Message):
     await message.answer(f"✅ Seu link encurtado: {link_encurtado}")
 
 async def start_webapp():
-    port = int(os.environ.get("PORT", 10000))  # Usa a porta do Render
+    port = int(os.environ.get("PORT", 10000))  # Render usa essa porta
     config = uvicorn.Config(app, host="0.0.0.0", port=port, log_level="info")
     server = uvicorn.Server(config)
     await server.serve()
 
-async def main():
-    await bot.delete_webhook()
+async def start_bot():
     print("🔄 Iniciando o bot do Telegram...")  # Debug
+    await bot.delete_webhook()  # Remove WebHook se existir
+    await dp.start_polling(bot)
 
-    # Criando tarefas para rodar o bot e o FastAPI ao mesmo tempo
-    task_webapp = asyncio.create_task(start_webapp())
-    await dp.start_polling(bot)  # Isso mantém o bot rodando indefinidamente
-
-    await task_webapp  # Apenas para garantir que o FastAPI não finalize antes da hora
+async def main():
+    task_bot = asyncio.create_task(start_bot())  # Inicia o bot
+    task_webapp = asyncio.create_task(start_webapp())  # Inicia o FastAPI
+    await asyncio.gather(task_bot, task_webapp)
 
 if __name__ == "__main__":
     asyncio.run(main())
